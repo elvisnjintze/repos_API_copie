@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from shop.models import Category, Product, Article
 from shop.serializers import CategorySerializer, ProductSerializer, ArticleSerializer
 from shop.serializers import CategoryDetailSerializer, CategoryListSerializer
+from shop.serializers import ProductListSerializer, ProductDetailSerializer
 
 
 
@@ -30,7 +31,8 @@ class CategoryViewSet2(ReadOnlyModelViewSet):
 class ProductViewSet2(ReadOnlyModelViewSet):
     """cette class permet l'accès à l'API (api/product) seulement en lecture
         pas de possibilité de créer, modifier et suprimer un produit"""
-    serializer_class = ProductSerializer
+    serializer_class = ProductListSerializer
+    detail_serializer_class = ProductDetailSerializer
     def get_queryset(self):
         #on applique le filtre; on veut tous produits dont l'attribut active=True
         queryset = Product.objects.filter(active=True)
@@ -40,6 +42,10 @@ class ProductViewSet2(ReadOnlyModelViewSet):
         if category_id is not None:
             queryset = queryset.filter(category_id=category_id)
         return queryset
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()
 
 
 

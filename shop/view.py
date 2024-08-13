@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
 from shop.models import Category, Product, Article
 from shop.serializers import CategorySerializer, ProductSerializer, ArticleSerializer
+from shop.serializers import CategoryDetailSerializer, CategoryListSerializer
 
 
 
@@ -12,14 +13,22 @@ from shop.serializers import CategorySerializer, ProductSerializer, ArticleSeria
 class CategoryViewSet2(ReadOnlyModelViewSet):
     """cette class permet l'accès à l'API (api/category2) seulement en lecture
     pas de possibilité de créer, modifier et suprimer une catégorie"""
-    serializer_class = CategorySerializer
+    serializer_class = CategoryListSerializer
+    detail_serializer_class = CategoryDetailSerializer
     def get_queryset(self):
         #return Category.objects.all()
         queryset = Category.objects.filter(active=True)
         return queryset
+    def get_serializer_class(self):
+        #si l'action démandée est retrieve cad demander de lister un détail sur
+        # une catégory donnée par exple api/category/3
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()
+
 
 class ProductViewSet2(ReadOnlyModelViewSet):
-    """cette class permet l'accès à l'API (api/product2) seulement en lecture
+    """cette class permet l'accès à l'API (api/product) seulement en lecture
         pas de possibilité de créer, modifier et suprimer un produit"""
     serializer_class = ProductSerializer
     def get_queryset(self):

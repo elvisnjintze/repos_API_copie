@@ -45,6 +45,15 @@ class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'date_created', 'date_updated', 'name', 'products']
+class CategoryDetailSerializer(ModelSerializer):
+
+    # En utilisant un `SerializerMethodField', il est nécessaire d'écrire une méthode
+    # nommée 'get_XXX' où XXX est le nom de l'attribut, ici 'products'
+    products = SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'date_created', 'date_updated', 'name', 'products']
 
     def get_products(self, instance):
         # Le paramètre 'instance' est l'instance de la catégorie consultée.
@@ -57,3 +66,9 @@ class CategorySerializer(ModelSerializer):
         serializer = ProductSerializer(queryset, many=True)
         # la propriété '.data' est le rendu de notre serializer que nous retournons ici
         return serializer.data
+
+class CategoryListSerializer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'date_created', 'date_updated']
+

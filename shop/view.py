@@ -27,24 +27,11 @@ class CategoryViewSet2(ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return self.detail_serializer_class
         return super().get_serializer_class()
-    @transaction.atomic
+
     @action(detail=True, methods=['POST'])
-    def desable(self, request, pk):
-        # Nous avons défini notre action accessible sur la méthode POST seulement
-        # elle concerne le détail car permet de désactiver une catégorie
-
-        # Nous avons également mis en place une transaction atomique car plusieurs requêtes vont être exécutées
-        # en cas d'erreur, nous retrouverions alors l'état précédent
-
-        # Désactivons la catégorie
-        category = self.get_object()
-        category.active = False
-        category.save()
-
-        # Puis désactivons les produits de cette catégorie
-        category.products.update(active=False)
-
-        # Retournons enfin une réponse (status_code=200 par défaut) pour indiquer le succès de l'action
+    def disable(self, request, pk):
+        # Nous pouvons maintenant simplement appeler la méthode disable
+        self.get_object().disable()
         return Response()
 
 

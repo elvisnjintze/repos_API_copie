@@ -1,11 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.response import Response
 from shop.models import Category, Product, Article
 from shop.serializers import CategorySerializer, ProductSerializer, ArticleSerializer
 from shop.serializers import CategoryDetailSerializer, CategoryListSerializer
 from shop.serializers import ProductListSerializer, ProductDetailSerializer
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.db import transaction
 
 
 
@@ -26,6 +27,25 @@ class CategoryViewSet2(ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return self.detail_serializer_class
         return super().get_serializer_class()
+    @transaction.atomic
+    @action(detail=True, methods=['POST'])
+    def desable(self, request, pk):
+        # Nous avons défini notre action accessible sur la méthode POST seulement
+        # elle concerne le détail car permet de désactiver une catégorie
+
+        # Nous avons également mis en place une transaction atomique car plusieurs requêtes vont être exécutées
+        # en cas d'erreur, nous retrouverions alors l'état précédent
+
+        # Désactivons la catégorie
+        category = self.get_object()
+        category.active = False
+        category.save()
+
+        # Puis désactivons les produits de cette catégorie
+        category.products.update(active=False)
+
+        # Retournons enfin une réponse (status_code=200 par défaut) pour indiquer le succès de l'action
+        return Response()
 
 
 class ProductViewSet2(ReadOnlyModelViewSet):

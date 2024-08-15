@@ -54,6 +54,12 @@ class ProductViewSet2(ReadOnlyModelViewSet):
             return self.detail_serializer_class
         return super().get_serializer_class()
 
+    @action(detail=True, methods=['POST'])
+    def disable(self, request, pk):
+        # Nous pouvons maintenant simplement appeler la méthode disable
+        self.get_object().disable()
+        return Response()
+
 
 
 

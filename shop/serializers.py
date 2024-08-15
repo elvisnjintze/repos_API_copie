@@ -70,7 +70,7 @@ class CategoryDetailSerializer(ModelSerializer):
 class CategoryListSerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'date_created', 'date_updated']
+        fields = ['id', 'name', 'date_created', 'date_updated','description']
 
     def validate_name(self, value):
         # Nous vérifions que la catégorie existe
@@ -79,6 +79,12 @@ class CategoryListSerializer(ModelSerializer):
             raise ValidationError('Category already exists')
         return value
 
+    def validate(self, data):
+        # Effectuons le contrôle sur la présence du nom dans la description
+        if data['name'] not in data['description']:
+            # Levons une ValidationError si ça n'est pas le cas
+            raise ValidationError('Name must be in description')
+        return data
 class ProductDetailSerializer(ModelSerializer):
 
     # En utilisant un `SerializerMethodField', il est nécessaire d'écrire une méthode

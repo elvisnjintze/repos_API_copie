@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from shop.models import Category, Product, Article
 from shop.serializers import CategorySerializer, ProductSerializer, ArticleSerializer
 from shop.serializers import CategoryDetailSerializer, CategoryListSerializer
-from shop.serializers import ProductListSerializer, ProductDetailSerializer
+from shop.serializers import ProductListSerializer, ProductDetailSerializer, ArticleDetailSerializer, ArticleListSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction
@@ -79,6 +79,20 @@ class AdminCategoryViewSet(ModelViewSet):
     detail_serializer_class = CategoryDetailSerializer
     def get_queryset(self):
         return Category.objects.all()
+    def get_serializer_class(self):
+        #si l'action démandée est retrieve cad demander de lister un détail sur
+        # une catégory donnée par exple api/category/3
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()
+
+class AdminArticleViewSet(ModelViewSet):
+    """cette class permet l'accès à l'API (api/category) seulement en lecture
+    pas de possibilité de créer, modifier et suprimer une catégorie"""
+    serializer_class = ArticleListSerializer
+    detail_serializer_class = ArticleDetailSerializer
+    def get_queryset(self):
+        return Article.objects.all()
     def get_serializer_class(self):
         #si l'action démandée est retrieve cad demander de lister un détail sur
         # une catégory donnée par exple api/category/3

@@ -111,3 +111,27 @@ class ProductListSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = ['id','name']
+
+class ArticleListSerializer(ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['id','name','date_created', 'date_updated','price','active','product']
+
+    def validate_price(self, value):
+        # Nous vérifions que la valeur du prix soit supérieure à 1 euro
+        if value<=1:
+            # En cas d'erreur, DRF nous met à disposition l'exception ValidationError
+            raise ValidationError('le prix doit etre supérieur à 1 euro')
+        return value
+    def validate_active(self, value):
+        #nous vérifions que la valeur de active soit = True
+        if  value is False:
+            raise ValidationError('article non actif. merci de mettre le champ active à True')
+        return value
+
+
+
+class ArticleDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['id','name','date_created', 'date_updated','price','product']

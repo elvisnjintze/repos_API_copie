@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, ValidationError
 from shop.models import Category, Product, Article
 
 class ProductSerializer(ModelSerializer):
@@ -72,6 +72,12 @@ class CategoryListSerializer(ModelSerializer):
         model = Category
         fields = ['id', 'name', 'date_created', 'date_updated']
 
+    def validate_name(self, value):
+        # Nous vérifions que la catégorie existe
+        if Category.objects.filter(name=value).exists():
+            # En cas d'erreur, DRF nous met à disposition l'exception ValidationError
+            raise ValidationError('Category already exists')
+        return value
 
 class ProductDetailSerializer(ModelSerializer):
 

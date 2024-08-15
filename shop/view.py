@@ -13,7 +13,7 @@ from django.db import transaction
 
 
 class CategoryViewSet2(ReadOnlyModelViewSet):
-    """cette class permet l'accès à l'API (api/category2) seulement en lecture
+    """cette class permet l'accès à l'API (api/category) seulement en lecture
     pas de possibilité de créer, modifier et suprimer une catégorie"""
     serializer_class = CategoryListSerializer
     detail_serializer_class = CategoryDetailSerializer
@@ -71,3 +71,17 @@ class ArticleViewSet(ReadOnlyModelViewSet):
         if product_id:
             return queryset.filter(product_id=product_id)
         return queryset
+
+class AdminCategoryViewSet(ModelViewSet):
+    """cette class permet l'accès à l'API (api/category) seulement en lecture
+    pas de possibilité de créer, modifier et suprimer une catégorie"""
+    serializer_class = CategoryListSerializer
+    detail_serializer_class = CategoryDetailSerializer
+    def get_queryset(self):
+        return Category.objects.all()
+    def get_serializer_class(self):
+        #si l'action démandée est retrieve cad demander de lister un détail sur
+        # une catégory donnée par exple api/category/3
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()

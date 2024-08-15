@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from shop.view import CategoryViewSet2, ProductViewSet2
-from shop.view import ArticleViewSet
+from shop.view import ArticleViewSet, AdminCategoryViewSet
 from rest_framework import routers
 
 
@@ -15,11 +15,13 @@ product2route = routers.SimpleRouter()
 articlerouter = routers.SimpleRouter()
 articlerouter.register('article',ArticleViewSet, basename='article')
 product2route.register('product', ProductViewSet2, basename='product')
-
+admin_router_category = routers.SimpleRouter()
+admin_router_category.register('admin/category',AdminCategoryViewSet, basename='admin-category')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/',include(router2.urls)),
     path('api/',include(product2route.urls)),
     path('api/',include(articlerouter.urls)),
+    path('api/',include(admin_router_category.urls)),
 ]

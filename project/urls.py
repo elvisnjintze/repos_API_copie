@@ -3,6 +3,7 @@ from django.urls import path, include
 from shop.view import CategoryViewSet2, ProductViewSet2
 from shop.view import ArticleViewSet, AdminCategoryViewSet, AdminArticleViewSet
 from rest_framework import routers
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 
 #ceci est la route permettant d'accéder à une API seulement en lecture
@@ -27,4 +28,6 @@ urlpatterns = [
     path('api/',include(articlerouter.urls)),
     path('api/',include(admin_router_category.urls)),
     path('api/',include(admin_router_article.urls)),
+    path('api/token',TokenObtainPairView.as_view(), name='obtain_tokens'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='refresh_token')
 ]

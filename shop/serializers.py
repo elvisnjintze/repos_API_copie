@@ -110,7 +110,7 @@ class ProductDetailSerializer(ModelSerializer):
 class ProductListSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id','name']
+        fields = ['id','name','ecoscore']
 
 class ArticleListSerializer(ModelSerializer):
     class Meta:

@@ -7,6 +7,7 @@ from shop.serializers import ProductListSerializer, ProductDetailSerializer, Art
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -77,6 +78,7 @@ class AdminCategoryViewSet(ModelViewSet):
     pas de possibilité de créer, modifier et suprimer une catégorie"""
     serializer_class = CategoryListSerializer
     detail_serializer_class = CategoryDetailSerializer
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         return Category.objects.all()
     def get_serializer_class(self):
@@ -91,6 +93,7 @@ class AdminArticleViewSet(ModelViewSet):
     pas de possibilité de créer, modifier et suprimer une catégorie"""
     serializer_class = ArticleListSerializer
     detail_serializer_class = ArticleDetailSerializer
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         return Article.objects.all()
     def get_serializer_class(self):

@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
-from shop.permission import IsAdminAuthenticated
+from shop.permission import IsAdminAuthenticated, IsStaff
 
 
 
@@ -98,7 +98,8 @@ class AdminArticleViewSet(ModelViewSet):
     detail_serializer_class = ArticleDetailSerializer
     #permission_classes = [IsAuthenticated]
     #ce end point ne sera accessible qu'aux superutilisateurs authentifiés
-    permission_classes = [IsAdminAuthenticated]
+    # et faisant partir du staff
+    permission_classes = [IsAdminAuthenticated, IsStaff]
     def get_queryset(self):
         return Article.objects.all()
     def get_serializer_class(self):
